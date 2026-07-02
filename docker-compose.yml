@@ -1,0 +1,31 @@
+services:
+  node1:
+    build: .
+    command: ["1"]
+    environment:
+      - PEERS=1:node1:5001,2:node2:5002,3:node3:5003
+      - ROLE=demo_cs        # nó 1 dispara um pedido de seção crítica
+      - DELAY=6
+    networks: [distnet]
+
+  node2:
+    build: .
+    command: ["2"]
+    environment:
+      - PEERS=1:node1:5001,2:node2:5002,3:node3:5003
+      - ROLE=demo_cs        # nó 2 também disputa a seção crítica
+      - DELAY=6
+    networks: [distnet]
+
+  node3:
+    build: .
+    command: ["3"]
+    environment:
+      - PEERS=1:node1:5001,2:node2:5002,3:node3:5003
+      - ROLE=demo_elec      # nó 3 dispara uma eleição (deve vencer: maior id)
+      - DELAY=12
+    networks: [distnet]
+
+networks:
+  distnet:
+    driver: bridge
